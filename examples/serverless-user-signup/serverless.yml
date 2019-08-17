@@ -1,0 +1,72 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: laconia-examples-serverless-user-signup
+#app: your-app-name
+#tenant: your-tenant-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  stage: ${opt:stage, 'dev'}
+  name: aws
+  runtime: nodejs10.x
+  region: ${opt:region, 'us-west-1'}
+  environment:
+    NODE_ENV: ${self:provider.stage}
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  tableName: ${self:custom.stage}-notes
+
+functions:
+  getUser:
+    handler: handler.getUser
+    events:
+      - http:
+          path: /v1/user
+          method: GET
+      - http:
+          path: /v1/user/{id}
+          method: GET
+
+  addUser:
+    handler: handler.addUser
+    events:
+      - http:
+          path: /v1/user
+          method: POST
+
+Resources:
+  NotesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.tableName}
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: noteId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: noteId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+plugins:
+  - serverless-offline
