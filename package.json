@@ -6,7 +6,9 @@
     "clean": "npm run clean:lerna",
     "clean:lerna": "lerna clean --yes || true",
     "postinstall": "lerna bootstrap",
-    "test:cloud": "lerna exec -- npm run cloud-test"
+    "test:cloud": "lerna exec -- npm run cloud-test",
+    "dynamodb:install": "sls dynamodb install",
+    "dynamodb:start": "sls dynamodb start"
   },
   "devDependencies": {
     "@laconia/test": "^0.16.0",

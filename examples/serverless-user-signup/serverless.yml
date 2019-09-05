@@ -30,6 +30,10 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   tableName: ${self:custom.stage}-notes
+  dynamodb:
+    stages:
+      - ${self:custom.stage}
+
 
 functions:
   getUser:
@@ -70,3 +74,4 @@ Resources:
 
 plugins:
   - serverless-offline
+  - serverless-dynamodb-local
